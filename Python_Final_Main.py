@@ -54,7 +54,7 @@ conn.commit()
 # Step 9: Define the edit_record function  
 def edit_record(database_connection):  
     cursor = database_connection.cursor()  
-    record_id = input("Enter record ID to edit: ")  
+    record_id = input("Enter student ID to edit: ")  
     
     # Check if the record exists  
     cursor.execute(f"SELECT * FROM {table_name} WHERE id = ?", (record_id,))  
@@ -98,3 +98,5 @@ for record in student_records:
 
 # Step 12: Close the database connection  
 conn.close()  
+
+#Brason Orrey and Jadon Anderstrom, 12/17/24, "Final Project".
