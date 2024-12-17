@@ -51,3 +51,50 @@ for student in student_data:
 # Step 8: Commit changes
 conn.commit()
 
+# Step 9: Define the edit_record function  
+def edit_record(database_connection):  
+    cursor = database_connection.cursor()  
+    record_id = input("Enter record ID to edit: ")  
+    
+    # Check if the record exists  
+    cursor.execute(f"SELECT * FROM {table_name} WHERE id = ?", (record_id,))  
+    record = cursor.fetchone()  
+    
+    if record:  
+        new_first_name = input(f"Enter new first name (current: {record[1]}): ")  
+        new_last_name = input(f"Enter new last name (current: {record[2]}): ")  
+        new_username = input(f"Enter new username (current: {record[3]}): ")  
+        new_birthdate = input(f"Enter new birthdate (current: {record[4]}): ")  
+        new_age = input(f"Enter new age (current: {record[5]}): ")  
+        new_city = input(f"Enter new city (current: {record[6]}): ")  
+
+        update_query = f"""  
+        UPDATE {table_name}  
+        SET first_name = COALESCE(NULLIF(?, ''), first_name),  
+            last_name = COALESCE(NULLIF(?, ''), last_name),  
+            username = COALESCE(NULLIF(?, ''), username),  
+            birthdate = COALESCE(NULLIF(?, ''), birthdate),  
+            age = COALESCE(NULLIF(?, ''), age),  
+            city = COALESCE(NULLIF(?, ''), city)  
+        WHERE id = ?;  
+        """  
+        cursor.execute(update_query, (  
+            new_first_name, new_last_name, new_username,  
+            new_birthdate, new_age, new_city, record_id  
+        ))  
+        database_connection.commit()  
+        print("Record Updated.")  
+    else:  
+        print("Record not found.")  
+
+# Step 10: Call the edit_record function to allow user to edit records  
+edit_record(conn)  
+
+# Step 11: Display queried student data  
+cursor.execute(f"SELECT * FROM {table_name}")  
+student_records = cursor.fetchall()  
+for record in student_records:  
+    print(record)  
+
+# Step 12: Close the database connection  
+conn.close()  
